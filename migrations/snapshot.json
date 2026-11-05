@@ -1,0 +1,485 @@
+{
+  "version": 1,
+  "tables": {
+    "monitors": {
+      "columns": {
+        "id": {
+          "type": "id",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "monitorKey": {
+          "type": "varchar",
+          "length": 36,
+          "notNull": true
+        },
+        "userId": {
+          "type": "refUser",
+          "length": 255,
+          "notNull": true
+        },
+        "updatedBy": {
+          "type": "varchar",
+          "length": 64,
+          "notNull": true
+        },
+        "name": {
+          "type": "varchar",
+          "length": 120,
+          "notNull": true
+        },
+        "type": {
+          "type": "varchar",
+          "length": 16,
+          "notNull": true
+        },
+        "groupName": {
+          "type": "varchar",
+          "length": 120,
+          "notNull": true,
+          "defaultValue": ""
+        },
+        "tags": {
+          "type": "json",
+          "notNull": true
+        },
+        "config": {
+          "type": "json",
+          "notNull": true
+        },
+        "sealed": {
+          "type": "text"
+        },
+        "hostId": {
+          "type": "integer"
+        },
+        "fromHostId": {
+          "type": "integer"
+        },
+        "intervalSec": {
+          "type": "integer",
+          "notNull": true
+        },
+        "retries": {
+          "type": "integer",
+          "notNull": true
+        },
+        "retryIntervalSec": {
+          "type": "integer",
+          "notNull": true
+        },
+        "timeoutSec": {
+          "type": "integer",
+          "notNull": true
+        },
+        "resendMinutes": {
+          "type": "integer",
+          "notNull": true
+        },
+        "enabled": {
+          "type": "boolean",
+          "notNull": true,
+          "defaultValue": true
+        },
+        "pushTokenHash": {
+          "type": "varchar",
+          "length": 64
+        },
+        "status": {
+          "type": "varchar",
+          "length": 16,
+          "notNull": true,
+          "defaultValue": "unknown"
+        },
+        "statusSince": {
+          "type": "bigint"
+        },
+        "lastCheckAt": {
+          "type": "bigint"
+        },
+        "pauseNote": {
+          "type": "varchar",
+          "length": 200
+        },
+        "createdAt": {
+          "type": "bigint",
+          "notNull": true
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_p_uptime_monitors_key",
+          "columns": [
+            "monitorKey"
+          ],
+          "unique": true
+        },
+        {
+          "name": "idx_p_uptime_monitors_user",
+          "columns": [
+            "userId"
+          ]
+        },
+        {
+          "name": "idx_p_uptime_monitors_push",
+          "columns": [
+            "pushTokenHash"
+          ]
+        }
+      ]
+    },
+    "monitor_access": {
+      "columns": {
+        "id": {
+          "type": "id",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "monitorId": {
+          "type": "integer",
+          "notNull": true
+        },
+        "userId": {
+          "type": "varchar",
+          "length": 64
+        },
+        "roleId": {
+          "type": "integer"
+        },
+        "level": {
+          "type": "varchar",
+          "length": 8,
+          "notNull": true
+        },
+        "grantedBy": {
+          "type": "varchar",
+          "length": 64,
+          "notNull": true
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_p_uptime_access_monitor",
+          "columns": [
+            "monitorId"
+          ]
+        },
+        {
+          "name": "idx_p_uptime_access_user",
+          "columns": [
+            "userId"
+          ]
+        },
+        {
+          "name": "idx_p_uptime_access_role",
+          "columns": [
+            "roleId"
+          ]
+        }
+      ]
+    },
+    "watches": {
+      "columns": {
+        "id": {
+          "type": "id",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "monitorId": {
+          "type": "integer",
+          "notNull": true
+        },
+        "userId": {
+          "type": "refUser",
+          "length": 255,
+          "notNull": true
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_p_uptime_watches_monitor_user",
+          "columns": [
+            "monitorId",
+            "userId"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    "incidents": {
+      "columns": {
+        "id": {
+          "type": "id",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "monitorId": {
+          "type": "integer",
+          "notNull": true
+        },
+        "startedAt": {
+          "type": "bigint",
+          "notNull": true
+        },
+        "endedAt": {
+          "type": "bigint"
+        },
+        "cause": {
+          "type": "varchar",
+          "length": 300,
+          "notNull": true
+        },
+        "ackBy": {
+          "type": "varchar",
+          "length": 64
+        },
+        "ackAt": {
+          "type": "bigint"
+        },
+        "note": {
+          "type": "text"
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_p_uptime_incidents_monitor",
+          "columns": [
+            "monitorId"
+          ]
+        },
+        {
+          "name": "idx_p_uptime_incidents_started",
+          "columns": [
+            "startedAt"
+          ]
+        }
+      ]
+    },
+    "rollups": {
+      "columns": {
+        "id": {
+          "type": "id",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "monitorId": {
+          "type": "integer",
+          "notNull": true
+        },
+        "size": {
+          "type": "varchar",
+          "length": 4,
+          "notNull": true
+        },
+        "bucket": {
+          "type": "bigint",
+          "notNull": true
+        },
+        "up": {
+          "type": "integer",
+          "notNull": true
+        },
+        "down": {
+          "type": "integer",
+          "notNull": true
+        },
+        "maintenance": {
+          "type": "integer",
+          "notNull": true
+        },
+        "latencySum": {
+          "type": "bigint",
+          "notNull": true
+        },
+        "latencyCount": {
+          "type": "integer",
+          "notNull": true
+        },
+        "latencyMin": {
+          "type": "integer"
+        },
+        "latencyMax": {
+          "type": "integer"
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_p_uptime_rollups_slot",
+          "columns": [
+            "monitorId",
+            "size",
+            "bucket"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    "maintenance": {
+      "columns": {
+        "id": {
+          "type": "id",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "type": "refUser",
+          "length": 255,
+          "notNull": true
+        },
+        "name": {
+          "type": "varchar",
+          "length": 120,
+          "notNull": true
+        },
+        "scope": {
+          "type": "varchar",
+          "length": 12,
+          "notNull": true
+        },
+        "monitorKeys": {
+          "type": "json",
+          "notNull": true
+        },
+        "tag": {
+          "type": "varchar",
+          "length": 60
+        },
+        "kind": {
+          "type": "varchar",
+          "length": 8,
+          "notNull": true
+        },
+        "startsAt": {
+          "type": "bigint"
+        },
+        "endsAt": {
+          "type": "bigint"
+        },
+        "days": {
+          "type": "json",
+          "notNull": true
+        },
+        "startMinute": {
+          "type": "integer"
+        },
+        "durationMinutes": {
+          "type": "integer"
+        },
+        "timezone": {
+          "type": "varchar",
+          "length": 64
+        },
+        "enabled": {
+          "type": "boolean",
+          "notNull": true,
+          "defaultValue": true
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_p_uptime_maintenance_user",
+          "columns": [
+            "userId"
+          ]
+        }
+      ]
+    },
+    "status_pages": {
+      "columns": {
+        "id": {
+          "type": "id",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "type": "refUser",
+          "length": 255,
+          "notNull": true
+        },
+        "slug": {
+          "type": "varchar",
+          "length": 64,
+          "notNull": true
+        },
+        "title": {
+          "type": "varchar",
+          "length": 120,
+          "notNull": true
+        },
+        "description": {
+          "type": "text"
+        },
+        "published": {
+          "type": "boolean",
+          "notNull": true,
+          "defaultValue": false
+        },
+        "showLatency": {
+          "type": "boolean",
+          "notNull": true,
+          "defaultValue": false
+        },
+        "groups": {
+          "type": "json",
+          "notNull": true
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_p_uptime_pages_slug",
+          "columns": [
+            "slug"
+          ],
+          "unique": true
+        },
+        {
+          "name": "idx_p_uptime_pages_user",
+          "columns": [
+            "userId"
+          ]
+        }
+      ]
+    },
+    "status_notes": {
+      "columns": {
+        "id": {
+          "type": "id",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "pageId": {
+          "type": "integer",
+          "notNull": true
+        },
+        "title": {
+          "type": "varchar",
+          "length": 160,
+          "notNull": true
+        },
+        "body": {
+          "type": "text"
+        },
+        "level": {
+          "type": "varchar",
+          "length": 10,
+          "notNull": true
+        },
+        "createdAt": {
+          "type": "bigint",
+          "notNull": true
+        },
+        "resolvedAt": {
+          "type": "bigint"
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_p_uptime_notes_page",
+          "columns": [
+            "pageId"
+          ]
+        }
+      ]
+    }
+  }
+}
