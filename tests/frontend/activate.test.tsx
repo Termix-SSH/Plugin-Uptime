@@ -86,6 +86,9 @@ describe(`${manifest.id} frontend`, () => {
       "uptime",
     ]);
     expect(rendered.registered.slot("host-page.tiles")).toHaveLength(1);
+    expect(rendered.registered.extensions("homepage.widgets")).toEqual([
+      "uptime",
+    ]);
   });
 
   it("lists monitors with their status", async () => {

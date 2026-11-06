@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import { HeartPulse } from "lucide-react";
 import type { TermixApp } from "@termix-ssh/plugin-sdk/frontend";
 import { initApi } from "./api";
+import { uptimeWidget } from "./HomepageWidget";
 import {
   HostBadge,
   HostTile,
@@ -90,4 +91,6 @@ export function activate(app: TermixApp): void {
     component: HostTile as unknown as ComponentType<Record<string, unknown>>,
     when: () => canView,
   });
+
+  app.registerExtension("homepage.widgets", uptimeWidget(app.t));
 }

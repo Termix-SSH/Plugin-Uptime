@@ -182,6 +182,7 @@
         }
       ]
     },
+    "uses": ["homepage.widgets"],
     "dashboardCards": [
       {
         "id": "uptime-overview",

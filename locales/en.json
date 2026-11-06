@@ -263,6 +263,12 @@
     "offTitle": "Public pages are off",
     "offHint": "An admin turned them off in the plugin settings, so these links show nothing."
   },
+  "widget": {
+    "name": "Uptime",
+    "description": "How many monitors are up or down.",
+    "up": "Up",
+    "down": "Down"
+  },
   "card": {
     "title": "Uptime",
     "overview": "All monitors",
@@ -270,6 +276,7 @@
     "monitors": "Monitors",
     "allGood": "Everything is up.",
     "gone": "This monitor is gone.",
+    "loading": "Loading...",
     "month": "30 days: {{value}}"
   },
   "host": {
