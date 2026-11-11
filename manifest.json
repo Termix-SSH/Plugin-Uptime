@@ -1,7 +1,7 @@
 {
   "id": "uptime",
   "name": "Uptime",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Watch websites, ports, hosts and services, get alerts when they go down, and publish status pages.",
   "author": {
     "name": "Termix"
