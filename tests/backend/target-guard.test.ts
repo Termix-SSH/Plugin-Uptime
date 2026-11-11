@@ -85,3 +85,18 @@ describe("resolveTarget", () => {
     );
   });
 });
+
+describe("GHSA-64cc-43f9-c2v3 rebinding", () => {
+  it("looks a name up once and returns that answer", async () => {
+    let calls = 0;
+    const lookup = async () => {
+      calls += 1;
+      return [
+        { address: calls === 1 ? "203.0.113.10" : "127.0.0.1", family: 4 },
+      ];
+    };
+    const chosen = await resolveTarget("rebind.test", false, lookup);
+    expect(chosen.address).toBe("203.0.113.10");
+    expect(calls).toBe(1);
+  });
+});
