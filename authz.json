@@ -1,0 +1,372 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Termix-SSH/Termix/main/scripts/authz/authz.schema.json",
+  "seed": [
+    {
+      "as": "owner",
+      "method": "POST",
+      "path": "/plugin-api/uptime/maintenance",
+      "body": {
+        "name": "authz-own-window",
+        "scope": "all",
+        "kind": "once",
+        "startsAt": 1,
+        "endsAt": 2
+      }
+    },
+    {
+      "as": "owner",
+      "method": "GET",
+      "path": "/plugin-api/uptime/maintenance",
+      "capture": {
+        "uptime.maintenance": "windows.-1.id"
+      }
+    },
+    {
+      "as": "owner",
+      "method": "POST",
+      "path": "/plugin-api/uptime/monitors",
+      "body": {
+        "name": "authz-own-monitor",
+        "type": "http",
+        "config": {
+          "url": "http://203.0.113.9/authz"
+        },
+        "intervalSeconds": 60
+      },
+      "capture": {
+        "uptime.monitors": "id",
+        "uptime.monitorKey": "key"
+      }
+    },
+    {
+      "as": "admin",
+      "method": "POST",
+      "path": "/plugin-api/uptime/pages",
+      "body": {
+        "title": "authz-own-page",
+        "slug": "authz-own-page"
+      }
+    },
+    {
+      "as": "admin",
+      "method": "GET",
+      "path": "/plugin-api/uptime/pages",
+      "capture": {
+        "uptime.pages": "pages.-1.id"
+      }
+    }
+  ],
+  "routes": {
+    "GET /plugin-api/uptime/hosts/:hostId/monitors": {
+      "access": "user",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      },
+      "filtered": true,
+      "note": "Lists only what the caller may see"
+    },
+    "GET /plugin-api/uptime/incidents": {
+      "access": "user",
+      "permission": "uptime.view"
+    },
+    "POST /plugin-api/uptime/incidents/:id/ack": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.incidents"
+      },
+      "params": {
+        "id": "=authz-none"
+      },
+      "allowed": "any",
+      "note": "No incidents in the test data (needs a failing monitor); only session, permission and unknown id refusals are checked"
+    },
+    "GET /plugin-api/uptime/maintenance": {
+      "access": "user",
+      "permission": "uptime.view"
+    },
+    "POST /plugin-api/uptime/maintenance": {
+      "access": "user",
+      "body": {
+        "name": "authz-x",
+        "scope": "monitors",
+        "monitorKeys": ["{{uptime.monitorKey}}"],
+        "kind": "once",
+        "startsAt": 1,
+        "endsAt": 2
+      },
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "note": "An all or tag window covers only the caller own monitors; a monitor window needs edit access to each monitor"
+    },
+    "DELETE /plugin-api/uptime/maintenance/:id": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.maintenance"
+      },
+      "params": {
+        "id": "uptime.maintenance"
+      },
+      "destructive": true
+    },
+    "PUT /plugin-api/uptime/maintenance/:id": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.maintenance"
+      },
+      "params": {
+        "id": "uptime.maintenance"
+      }
+    },
+    "GET /plugin-api/uptime/monitors": {
+      "access": "user",
+      "permission": "uptime.view"
+    },
+    "POST /plugin-api/uptime/monitors": {
+      "access": "user",
+      "resource": {
+        "kind": "host",
+        "min": "connect",
+        "key": "hostId"
+      },
+      "body": {
+        "name": "authz-x",
+        "type": "http",
+        "config": {
+          "url": "http://203.0.113.9/"
+        }
+      }
+    },
+    "DELETE /plugin-api/uptime/monitors/:id": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "params": {
+        "id": "uptime.monitors"
+      },
+      "destructive": true
+    },
+    "GET /plugin-api/uptime/monitors/:id": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "params": {
+        "id": "uptime.monitors"
+      }
+    },
+    "PUT /plugin-api/uptime/monitors/:id": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "params": {
+        "id": "uptime.monitors"
+      }
+    },
+    "GET /plugin-api/uptime/monitors/:id/history": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "params": {
+        "id": "uptime.monitors"
+      }
+    },
+    "POST /plugin-api/uptime/monitors/:id/pause": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "params": {
+        "id": "uptime.monitors"
+      }
+    },
+    "POST /plugin-api/uptime/monitors/:id/push-url": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "params": {
+        "id": "uptime.monitors"
+      }
+    },
+    "POST /plugin-api/uptime/monitors/:id/run": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "params": {
+        "id": "uptime.monitors"
+      },
+      "destructive": true
+    },
+    "GET /plugin-api/uptime/monitors/:id/shares": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "params": {
+        "id": "uptime.monitors"
+      }
+    },
+    "PUT /plugin-api/uptime/monitors/:id/shares": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "params": {
+        "id": "uptime.monitors"
+      }
+    },
+    "POST /plugin-api/uptime/monitors/:id/watch": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.monitors"
+      },
+      "params": {
+        "id": "uptime.monitors"
+      }
+    },
+    "POST /plugin-api/uptime/monitors/hosts": {
+      "access": "user",
+      "resource": {
+        "kind": "host",
+        "min": "connect",
+        "key": "hostId"
+      },
+      "filtered": true,
+      "note": "Adds monitors only for hosts the caller may see"
+    },
+    "POST /plugin-api/uptime/monitors/test": {
+      "access": "user",
+      "resource": {
+        "kind": "host",
+        "min": "connect",
+        "key": "hostId"
+      },
+      "body": {
+        "name": "authz-x",
+        "type": "http",
+        "config": {
+          "url": "http://203.0.113.9/"
+        }
+      }
+    },
+    "GET /plugin-api/uptime/pages": {
+      "access": "user",
+      "permission": ["uptime.view", "uptime.publish"]
+    },
+    "POST /plugin-api/uptime/pages": {
+      "access": "user",
+      "resource": {
+        "kind": "host",
+        "min": "connect",
+        "key": "hostId"
+      }
+    },
+    "DELETE /plugin-api/uptime/pages/:id": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.pages"
+      },
+      "params": {
+        "id": "uptime.pages"
+      },
+      "destructive": true
+    },
+    "PUT /plugin-api/uptime/pages/:id": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.pages"
+      },
+      "params": {
+        "id": "uptime.pages"
+      }
+    },
+    "GET /plugin-api/uptime/pages/:id/notes": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.pages"
+      },
+      "params": {
+        "id": "uptime.pages"
+      },
+      "permission": "uptime.publish"
+    },
+    "POST /plugin-api/uptime/pages/:id/notes": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.pages"
+      },
+      "params": {
+        "id": "uptime.pages"
+      }
+    },
+    "DELETE /plugin-api/uptime/pages/:id/notes/:noteId": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.pages"
+      },
+      "params": {
+        "id": "uptime.pages"
+      },
+      "destructive": true
+    },
+    "POST /plugin-api/uptime/pages/:id/notes/:noteId": {
+      "access": "user",
+      "resource": {
+        "kind": "own",
+        "fixture": "uptime.pages"
+      },
+      "params": {
+        "id": "uptime.pages"
+      }
+    },
+    "GET /plugin-api/uptime/permissions": {
+      "access": "user",
+      "permission": "uptime.view"
+    },
+    "GET /plugin-api/uptime/push/:token": {
+      "access": "public"
+    },
+    "POST /plugin-api/uptime/push/:token": {
+      "access": "public"
+    },
+    "GET /plugin-api/uptime/share-targets": {
+      "access": "user",
+      "permission": "uptime.view"
+    },
+    "GET /plugin-api/uptime/status/:slug": {
+      "access": "public"
+    },
+    "GET /plugin-api/uptime/status/:slug/data": {
+      "access": "public"
+    },
+    "GET /plugin-api/uptime/summary": {
+      "access": "user",
+      "permission": "uptime.view"
+    }
+  }
+}
