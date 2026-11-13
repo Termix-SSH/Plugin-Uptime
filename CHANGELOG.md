@@ -2,6 +2,10 @@
 
 ## 1.0.1
 
+### Changed
+
+- Runs in its own process on Termix 26.11.2 and later, with no access to the server beyond what Termix allows it
+
 ### Fixed
 
 - Monitor editor Test button now matches the Save button size

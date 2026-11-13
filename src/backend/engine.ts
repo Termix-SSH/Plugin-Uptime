@@ -108,14 +108,14 @@ export class UptimeEngine {
     await beats.load(await ctx.files.dataDir());
     rollups.load(await repo.listRollups());
     await this.reload();
-    const every = (ms: number, work: () => Promise<void>) => {
+    const every = (id: string, ms: number, work: () => Promise<void>) => {
       this.stops.push(
-        ctx.schedule.every(ms, () => this.guard(work), { jitterMs: 0 }),
+        ctx.schedule.every(ms, () => this.guard(work), { id, jitterMs: 0 }),
       );
     };
-    every(TICK_MS, () => this.tick());
-    every(RELOAD_MS, () => this.reload());
-    every(FLUSH_MS, () => this.flush());
+    every("tick", TICK_MS, () => this.tick());
+    every("reload", RELOAD_MS, () => this.reload());
+    every("flush", FLUSH_MS, () => this.flush());
   }
 
   /** A timer that throws counts against the plugin's error budget. */

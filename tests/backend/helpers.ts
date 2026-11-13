@@ -65,6 +65,7 @@ export async function startServer(
     "INSERT INTO users (id, username) VALUES ('u1', 'one'), ('u2', 'two'), ('u3', 'three')",
   );
   const mock = createMockCtx({
+    sandbox: true,
     db: db.database,
     pluginId: manifest.id,
     manifest,
