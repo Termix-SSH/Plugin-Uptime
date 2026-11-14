@@ -10,6 +10,7 @@ import {
   type MonitorSecrets,
 } from "../shared/types.js";
 import type { AlertSender } from "./alerts.js";
+import { keepAwake } from "./keep-awake.js";
 import type { BeatStore } from "./beats.js";
 import { checkDns } from "./checks/dns.js";
 import { checkHttp } from "./checks/http.js";
@@ -158,6 +159,12 @@ export class UptimeEngine {
   async reload(): Promise<void> {
     const { repo, beats } = this.deps;
     const rows = await repo.listMonitors();
+    // No monitor running: nothing keeps the process up.
+    keepAwake(
+      this.deps.ctx,
+      "monitors",
+      rows.some((row) => row.enabled),
+    );
     const open = await repo.openCauses();
     const seen = new Set<number>();
     for (const row of rows) {
