@@ -30,7 +30,7 @@ import {
   checkSystemd,
   judgeContainer,
 } from "../../src/backend/checks/ssh";
-import { resolveTarget } from "../../src/backend/target-guard";
+import { resolveTarget } from "../../src/backend/targets";
 import { checkTcp } from "../../src/backend/checks/tcp";
 import { judgeCert } from "../../src/backend/checks/tls";
 import type { RemoteRun } from "../../src/backend/checks/types";
