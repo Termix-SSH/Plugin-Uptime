@@ -9,6 +9,7 @@
 
 ### Fixed
 
+- Refuses private addresses written in IPv4-compatible (`::10.0.0.1`) or NAT64 (`64:ff9b::10.0.0.1`) form
 - Monitor editor Test button now matches the Save button size
 
 ## 1.0.0
